@@ -1,0 +1,3222 @@
+[
+  {
+    "doc": "api/trading/account/get-accounts",
+    "title": "Get Authorized Trading Accounts",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/authorized_trd_accs",
+    "description": "Query the authorized trading accounts of uid.",
+    "params": []
+  },
+  {
+    "doc": "api/trading/trade/get-max-qty",
+    "title": "Query Max Tradable Quantity",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/acctradinginfo",
+    "description": "Query the maximum quantity that can be bought or sold under a specific trading account, and you can also query the maximum changeable quantity of a specific order.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Symbol code. Format: exchange.symbol, e.g. US.AAPL"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Price of a non-market order. For securities accounts, accurate to 3 decimal places. For futures accounts, accurate to 9 decimal places. Excess will be discarded."
+      },
+      {
+        "name": "order_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Order type. See Naming Dictionary"
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Order ID. By default, using empty string to query the maximum available quantity for new orders. If an order needs modifying, the order_id needs to be transmitted. If you use this parameter to query the maximum quantity, you need to call this interface again after placing an order, with an interval of more than 0.5 seconds."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/deal/get-history-deals",
+    "title": "Get Historical Deals",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/fills_history",
+    "description": "Query the historical transaction list of the specified trading business account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "trd_market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Trading market. See Naming Dictionary"
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Code filtering. Return the data of the specified code. By default, return all data."
+      },
+      {
+        "name": "start",
+        "type": "integer",
+        "raw_type": "uint64",
+        "in": "query",
+        "required": false,
+        "description": "Start time of update time. Timestamp, in microseconds."
+      },
+      {
+        "name": "end",
+        "type": "integer",
+        "raw_type": "uint64",
+        "in": "query",
+        "required": false,
+        "description": "End time of update time, which should be after start time. Timestamp, in microseconds."
+      },
+      {
+        "name": "page_flag",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Empty string, which means starting from the beginning, otherwise using the page_flag returned by the server."
+      },
+      {
+        "name": "page_size",
+        "type": "integer",
+        "raw_type": "uint32",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default is 50. Range: 10-50."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/account/get-funds",
+    "title": "Get Account Funds",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/funds",
+    "description": "Query the net asset value, securities market value, cash, purchasing power and other fund data of the trading business account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "currency",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Display currency of funds. Only applicable to futures accounts and comprehensive securities accounts; this parameter will be ignored for other account types. In the returned data, except for fields that clearly indicate the currency, other fund-related fields are converted with this parameter."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/trade/order-confirm",
+    "title": "Order Confirm",
+    "method": "POST",
+    "path": "/api/v1.0/accounts/{acc_id}/order_confirm",
+    "description": "Confirm an order. This endpoint needs to be called when need_order_confirm is returned as true after placing or modifying an order.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID."
+      },
+      {
+        "name": "confirm_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Order confirm ID, from the confirm_id of place order or modify order response."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/deal/get-today-deals",
+    "title": "Get Today's Deals",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/order_fills",
+    "description": "Query the daily transaction list of the specified trading business account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "trd_market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Trading market. See Naming Dictionary"
+      },
+      {
+        "name": "page_flag",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Empty string, which means starting from the beginning, otherwise using the page_flag returned by the server."
+      },
+      {
+        "name": "page_size",
+        "type": "integer",
+        "raw_type": "uint32",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default is 50. Range: 10-100."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/order/get-open-orders",
+    "title": "Get Open Orders",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/orders",
+    "description": "Query the list of open orders for a specified account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "trd_market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Trading market. See Naming Dictionary"
+      },
+      {
+        "name": "page_flag",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Empty string, which means starting from the beginning, otherwise using the page_flag returned by the server."
+      },
+      {
+        "name": "page_size",
+        "type": "integer",
+        "raw_type": "uint32",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default is 50. Range: 10-100."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/trade/place-order",
+    "title": "Place Order",
+    "method": "POST",
+    "path": "/api/v1.0/accounts/{acc_id}/orders",
+    "description": "Place a new order.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID."
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Tradable symbol. Format: exchange.symbol, e.g. US.AAPL, US.AAPL250926C235000"
+      },
+      {
+        "name": "qty",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Order quantity. The unit of options and futures is \"contract\"."
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Order price. 4 decimal place accuracy (9 for futures), excess part will be rounded."
+      },
+      {
+        "name": "side",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Trading direction. Values: BUY, SELL, SELL_SHORT, BUY_BACK"
+      },
+      {
+        "name": "order_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Order type. Values: LIMIT, MARKET, AUCTION, AUCTION_LIMIT, STOP, STOP_LIMIT, MARKET_IF_TOUCHED, LIMIT_IF_TOUCHED"
+      },
+      {
+        "name": "time_in_force",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Valid period. Values: DAY (good for the day), GTC (good until cancel)"
+      },
+      {
+        "name": "session",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Trading session (US stocks only). Values: RTH (regular trading hours), RTH+Pre/Post-Mkt, OVERNIGHT (night trading only), ALL_DAY. Market orders only support RTH."
+      },
+      {
+        "name": "aux_price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Trigger price. Required when order type is STOP, STOP_LIMIT, MARKET_IF_TOUCHED, or LIMIT_IF_TOUCHED. The price will be rounded to 3 decimals for securities account, and 9 decimals for futures account."
+      },
+      {
+        "name": "lot_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Lot type, default round lot. Used for HK stock trading."
+      },
+      {
+        "name": "remark",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Remark. Maximum length after converting to UTF-8 is 64 bytes."
+      },
+      {
+        "name": "order_class",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Order class. Specify as MLEG for multi-leg orders."
+      },
+      {
+        "name": "multi_leg_info",
+        "type": "string",
+        "raw_type": "MultiLegInfo",
+        "in": "body",
+        "required": false,
+        "description": "Multi-leg order info. Required when placing multi-leg orders."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/order/get-order-details",
+    "title": "Get Order Details",
+    "method": "POST",
+    "path": "/api/v1.0/accounts/{acc_id}/orders/detail",
+    "description": "Query the details of specified orders.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "exchange",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Exchange. If querying multiple orders, these orders must be in the same exchange. See Naming Dictionary"
+      },
+      {
+        "name": "order_ids",
+        "type": "array",
+        "raw_type": "list[string]",
+        "in": "body",
+        "required": true,
+        "description": "Order ID list. The length of order_ids should be less than 50."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/trade/cancel-order",
+    "title": "Cancel Order",
+    "method": "DELETE",
+    "path": "/api/v1.0/accounts/{acc_id}/orders/{order_id}",
+    "description": "Cancel an existing order.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID."
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Order ID."
+      },
+      {
+        "name": "exchange",
+        "type": "string",
+        "raw_type": "Exchange",
+        "in": "query",
+        "required": true,
+        "description": "Exchange. See Naming Dictionary - exchange."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/trade/modify-order",
+    "title": "Modify Order",
+    "method": "PUT",
+    "path": "/api/v1.0/accounts/{acc_id}/orders/{order_id}",
+    "description": "Modify an existing order.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID."
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Order ID."
+      },
+      {
+        "name": "exchange",
+        "type": "string",
+        "raw_type": "Exchange",
+        "in": "body",
+        "required": true,
+        "description": "Exchange. See Naming Dictionary - exchange."
+      },
+      {
+        "name": "qty",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "The quantity after the order is changed. The unit of options and futures is \"contract\"."
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "The price after the order is changed. 9 decimal places for futures, 4 for others; excess is discarded."
+      },
+      {
+        "name": "aux_price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Trigger price. Required when order type is STOP, STOP_LIMIT, MARKET_IF_TOUCHED, or LIMIT_IF_TOUCHED. The price will be rounded to 3 decimals for securities account, and 9 decimals for futures account."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/order/get-history-orders",
+    "title": "Get Historical Orders",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/orders_history",
+    "description": "Query the historical order list of the specified trading business account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "trd_market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Trading market. See Naming Dictionary"
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Code filtering. Return the data of the specified code. By default, return all data."
+      },
+      {
+        "name": "start",
+        "type": "integer",
+        "raw_type": "uint64",
+        "in": "query",
+        "required": false,
+        "description": "Start time of create time. Timestamp, in microseconds."
+      },
+      {
+        "name": "end",
+        "type": "integer",
+        "raw_type": "uint64",
+        "in": "query",
+        "required": false,
+        "description": "End time of create time, which should be after start time. Timestamp, in microseconds."
+      },
+      {
+        "name": "page_flag",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Empty string, which means starting from the beginning, otherwise using the page_flag returned by the server."
+      },
+      {
+        "name": "page_size",
+        "type": "integer",
+        "raw_type": "uint32",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default is 50. Range: 10-100."
+      }
+    ]
+  },
+  {
+    "doc": "api/trading/account/get-positions",
+    "title": "Get Positions",
+    "method": "GET",
+    "path": "/api/v1.0/accounts/{acc_id}/positions",
+    "description": "Query the holding position list of a specific trading account.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Trading business account ID."
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Only return positions matching these codes. If not passed, return all. For futures positions, you need to pass the contract code with a specific month; filtering by the main contract code is not supported."
+      },
+      {
+        "name": "pl_ratio_min",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Lower limit of current P&L ratio filter. e.g. When 10 is passed, positions with P&L ratio ≥ +10% will be returned."
+      },
+      {
+        "name": "pl_ratio_max",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Upper limit of current P&L ratio filter. e.g. When 20 is passed, positions with P&L ratio ≤ +20% will be returned."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/combo-option-quote",
+    "title": "Combo Option Quote",
+    "method": "POST",
+    "path": "/api/v1.0/quote/combo-option-quote",
+    "description": "Quote combo option packages using caller-supplied legs (contract + BUY/SELL + quantity).",
+    "params": [
+      {
+        "name": "combo_list",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": true,
+        "description": "Combo list, 1~20 items. Each element is described below."
+      },
+      {
+        "name": "legs",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": true,
+        "description": "Legs of this combo, at least 1."
+      },
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "US or HK option contract, or the underlying stock for Covered. Option e.g. US.AAPL260821C110000; Covered adds US.AAPL BUY 100. At most one stock leg per combo."
+      },
+      {
+        "name": "side",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Trade side. See Naming Dictionary."
+      },
+      {
+        "name": "quantity",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": true,
+        "description": "Quantity, a positive integer."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/economic-calendar-hot",
+    "title": "Economic Calendar Hot",
+    "method": "GET",
+    "path": "/api/v1.0/quote/economic-calendar/hot",
+    "description": "Get a list of hot/recommended economic data for a specific date (sorted by importance). Returns major economic indicators scheduled for that day (e.g. CPI, GDP, non-farm payrolls, central bank rate decisions), including previous value, forecast, actual value, and importance star rating.",
+    "params": [
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Items per page, range 1~20"
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for first page, pass previous pagination.next_key to continue"
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Query date, format yyyyMMdd, e.g. 20260618"
+      },
+      {
+        "name": "timezone",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Timezone for the date, e.g. America/New_York"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/economic-calendar-search",
+    "title": "Economic Calendar Search",
+    "method": "GET",
+    "path": "/api/v1.0/quote/economic-calendar/search",
+    "description": "Search the economic calendar by keyword, supporting four types: economic data (CPI/GDP/non-farm payrolls and other macro indicators), market closures, economic events (central bank speeches/meetings), and corporate actions (dividends/splits). Returns matching event list with pagination and time sorting.",
+    "params": [
+      {
+        "name": "keyword",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Search keyword, e.g. CPI, Fed, GDP"
+      },
+      {
+        "name": "search_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "Search type, see enum table below"
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Items per page, range 1~30"
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for first page, pass previous pagination.next_key to continue"
+      },
+      {
+        "name": "time_order_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort order: 0=ascending (ASC), 1=descending (DESC); only applies when search_type=2/3"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/search",
+    "title": "find-community",
+    "method": "GET",
+    "path": "/api/v1.0/quote/find-community",
+    "description": "Search community discussions, topics, and live streams by keyword.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Search keyword"
+      },
+      {
+        "name": "size",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of results, default 10, range 1~50"
+      },
+      {
+        "name": "community_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Community type: 1=Discussion(FEED), 2=Topic(TOPIC), 3=Live(LIVE); omit for all"
+      },
+      {
+        "name": "sort_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort: 1=by popularity, 2=by time (latest); omit for backend default"
+      },
+      {
+        "name": "lang",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Language filter: zh-CN / zh-HK / en / ja"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/search",
+    "title": "find-news",
+    "method": "GET",
+    "path": "/api/v1.0/quote/find-news",
+    "description": "Search news articles, announcements, and research reports by keyword.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Search keyword, e.g. Tencent, AAPL, new energy"
+      },
+      {
+        "name": "size",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of results, default 10, range 1~50"
+      },
+      {
+        "name": "news_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "News type filter: 1=News(POST), 2=Announcement(NOTICE), 3=Report(REPORT); omit to return all"
+      },
+      {
+        "name": "sort_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort: 1=by reads, 2=by time (latest); omit for backend default"
+      },
+      {
+        "name": "lang",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Language filter: zh-CN / zh-HK / en / ja"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/future-info",
+    "title": "Future Info",
+    "method": "POST",
+    "path": "/api/v1.0/quote/future-info",
+    "description": "Get basic information for futures contracts (exchange, trade time, contract size, price unit, min change, etc.).",
+    "params": [
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "Futures contract code list, max 400 per request; e.g. [\"HK.HSImain\", \"US.CLmain\"]."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/ipo/ipo-list",
+    "title": "IPO List",
+    "method": "GET",
+    "path": "/api/v1.0/quote/ipo-list/{market}",
+    "description": "Get the new stock IPO list. Supports Hong Kong / US / A-shares / Singapore / Malaysia — five markets, each with a separate endpoint. Returns recent subscribable and upcoming IPOs, excluding historical IPOs.",
+    "params": [
+      {
+        "name": "market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Path parameter market."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/market-state",
+    "title": "Market State",
+    "method": "POST",
+    "path": "/api/v1.0/quote/market-state",
+    "description": "Get the current market state (open / closed / pre-market / after-hours / overnight / closing auction, etc.) for a batch of symbols. Useful for determining quote availability and freshness.",
+    "params": [
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "List of symbol codes in {market}.{code} format, e.g. [\"HK.00700\",\"US.AAPL\",\"SH.600519\"]. Market prefix is required. Max 400 per batch."
+      },
+      {
+        "name": "is_contain_ba",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "body",
+        "required": false,
+        "description": "Whether to include US pre-market/after-hours sessions; true switches trade_section to the next trading day's schedule once pre/after-hours begins. Default false. Only affects US-related entries."
+      },
+      {
+        "name": "is_contain_overnight",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "body",
+        "required": false,
+        "description": "Whether to include US overnight session; true switches trade_section to the next trading day's schedule once overnight begins. Default false. Only affects US-related entries."
+      },
+      {
+        "name": "is_need_crypto_multi_broker",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "body",
+        "required": false,
+        "description": "Whether to return multi-broker data for crypto market; true expands multiple records per market_id by broker. Default false. Only affects CC. prefix entries."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/watchlist/modify-user-security",
+    "title": "Modify User Security",
+    "method": "POST",
+    "path": "/api/v1.0/quote/modify-user-security",
+    "description": "Modify user watchlist: add symbols to a group, remove from a specific group only, or delete from all groups entirely. Use user-security-group to query watchlist groups; use user-security to query symbols in a group.",
+    "params": [
+      {
+        "name": "group_name",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Watchlist group name (first match if duplicate names), max 100 characters; only custom groups supported. Required for op=ADD/MOVE_OUT; optional for op=DEL."
+      },
+      {
+        "name": "op",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Operation type: ADD=add to specified group / DEL=delete from all groups entirely / MOVE_OUT=remove from specified group only."
+      },
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "List of symbol codes, must not be empty, 1-200 per call. e.g. [\"HK.00700\",\"US.AAPL\"]."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/screening/option-screen",
+    "title": "Option Screen",
+    "method": "POST",
+    "path": "/api/v1.0/quote/option-screen",
+    "description": "Option screener: within a specified market category (US/HK/JP stocks x stocks/indices/futures), filter option contracts from the entire market using multi-group conditions expressed by strategy (underlying, strike price, expiration date, option direction, Greeks, implied volatility, chain statistics, etc.). Supports sorting and pagination.",
+    "params": [
+      {
+        "name": "strategy",
+        "type": "object",
+        "raw_type": "object",
+        "in": "body",
+        "required": true,
+        "description": "Screening strategy. Structure: {market_category_list, filter_group_list}. market_category_list values: 0=US_STOCK / 1=US_INDEX / 2=US_FUTURE / 3=HK_STOCK / 4=HK_INDEX / 5=JP_STOCK / 6=JP_INDEX (multiple elements form a union). filter_group_list multiple groups intersect; within a single group, same-field indicator arrays form a union; each group must have exactly one non-empty list among underlying_list / option_list / chain_list / combo_list."
+      },
+      {
+        "name": "strategy_param",
+        "type": "object",
+        "raw_type": "object",
+        "in": "body",
+        "required": false,
+        "description": "Strategy additional parameters. Required only when the strategy uses watchlist or stock screener results as underlying source: watch_stock_id_list:[uint64] / stock_screener_stock_id_list:[uint64]."
+      },
+      {
+        "name": "field_filter",
+        "type": "object",
+        "raw_type": "object",
+        "in": "body",
+        "required": false,
+        "description": "Declare which indicator fields to return. When not provided, only the default 4 fields (volume / price / chg_ratio / implied_volatility) + option_id are returned. Use 1 as placeholder for int fields, string placeholder (e.g. \"x\") for string fields. Nested fields use proto field names, e.g. underlying_info:{iv:1, hv:1}."
+      },
+      {
+        "name": "sort_obj",
+        "type": "object",
+        "raw_type": "object",
+        "in": "body",
+        "required": false,
+        "description": "Sort method: {sort_field: OptionItem, is_asc}. sort_field sets only 1 field (e.g. {\"volume\":1}). is_asc non-zero for ascending, 0/omit for descending. Default: by volume descending."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for first page; pass back previous page's pagination.next_key."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Page size. Default 100, max 1000; can pass 0 (query total count only, used with request_exact_data=0)."
+      },
+      {
+        "name": "request_exact_data",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Whether to return exact detail: 0=return total count only (option_list is empty), 1=return detail list (default)."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/order-book",
+    "title": "Order Book",
+    "method": "POST",
+    "path": "/api/v1.0/quote/order-book",
+    "description": "Get real-time bid/ask order book for a symbol. The number of levels and book shape are determined jointly by the user's market data permission level (LV1/LV2/LV3) and category; the gateway automatically selects the fetch method and level count based on permissions.",
+    "params": [
+      {
+        "name": "code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Symbol code, format <MARKET>.<SYMBOL>, e.g. HK.00700."
+      },
+      {
+        "name": "num",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Maximum number of price levels to return, range 1~60; if not provided, returns the maximum levels allowed by the user's permission."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/plate/plate-list",
+    "title": "Plate List",
+    "method": "GET",
+    "path": "/api/v1.0/quote/plate-list",
+    "description": "Get all plates (sectors) under a specified market and plate class.",
+    "params": [
+      {
+        "name": "market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Market prefix. See Naming Dictionary."
+      },
+      {
+        "name": "plate_class",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Plate class: ALL / INDUSTRY / REGION / CONCEPT / OTHER. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/plate/plate-stock",
+    "title": "Plate Stock",
+    "method": "GET",
+    "path": "/api/v1.0/quote/plate-stock",
+    "description": "Get the list of stock members under a specified plate (sector), with sorting and pagination support.",
+    "params": [
+      {
+        "name": "plate_code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Plate code (from the plate list API), e.g. HK.LIST1045."
+      },
+      {
+        "name": "sort_field",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Sort field. Default NONE. See Naming Dictionary."
+      },
+      {
+        "name": "ascend",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "query",
+        "required": false,
+        "description": "Ascending order. Default true."
+      },
+      {
+        "name": "price_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Value source for price-type sort fields. Default NORMAL. Values: NORMAL / BEFORE / AFTER / OVERNIGHT."
+      },
+      {
+        "name": "leverage_direction",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "ETF leverage direction filter (only effective for ETF plates): 0=all / 1=long / 2=short. Default 0."
+      },
+      {
+        "name": "leverage_multiple",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "ETF leverage multiple filter (only effective for ETF plates), scaled by 10^3, e.g. 2000=2x. Default 0=all."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for the first page; pass the previous page's pagination.next_key."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 200, max 1000."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/market-snapshot",
+    "title": "Market Snapshot",
+    "method": "POST",
+    "path": "/api/v1.0/quote/snapshot",
+    "description": "Batch get real-time market snapshot for up to 400 symbols. Returns common fields (last/open/high/low/prev close, volume, turnover, turnover rate, etc.), financial fields (market cap, PE, PB, EPS, dividend yield, etc.) and category-specific fields (index component counts, futures settlement, options greeks, etc.).",
+    "params": [
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "List of symbol codes (min 1, max 400). Format: <MARKET>.<CODE>, e.g. HK.09988, US.AAPL, BMD.FCPOmain."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/stock-basicinfo",
+    "title": "Stock Basic Info",
+    "method": "POST",
+    "path": "/api/v1.0/quote/stock-basicinfo",
+    "description": "Get basic static information for stocks (listing date, lot size, stock type, etc.).",
+    "params": [
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "List of symbol codes, 1-400 per request, e.g. [\"HK.00700\",\"US.AAPL\"]"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/stock-quote",
+    "title": "Stock Quote",
+    "method": "POST",
+    "path": "/api/v1.0/quote/stock-quote",
+    "description": "Batch get real-time stock quotes (lightweight snapshot), aligned with the Quote base quote pushed via subscription. Compared to get_market_snapshot, the field set is more compact and suitable for multi-symbol polling.",
+    "params": [
+      {
+        "name": "code_list",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "body",
+        "required": true,
+        "description": "List of symbol codes."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/screening/stock-screen",
+    "title": "Stock Screen",
+    "method": "POST",
+    "path": "/api/v1.0/quote/stock-screen",
+    "description": "Conditional stock screening: combine N filter conditions to filter, sort, and paginate across the entire market, returning multiple columns for each matched security based on specified retrieval factors. For warrant screening use warrant-screen; for option screening use option-screen.",
+    "params": [
+      {
+        "name": "screen_queries",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": true,
+        "description": "Filter condition array. Each element is a \"1-of-11\" query object -- simple_field_query (market/exchange/index/northbound sector enum field IN list) / plate_query (plate filter) / simple_property_query (quote/valuation factor range) / cumulative_property_query (cumulative quote range, requires period) / financial_property_query (financial factor range, requires fiscal period) / indicator_positional_query (technical indicator positional relationship) / indicator_pattern_query (technical pattern) / featured_property_query (featured factor) / broker_holdings_query (broker holdings, HK only) / kline_shape_query (K-line pattern) / option_query (option indicator). Ranges use lower={value, includes} / upper={value, includes}, where value is pre-multiplied by the field's multiplier."
+      },
+      {
+        "name": "retrieve_queries",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": false,
+        "description": "Retrieval factor array. Each element is a \"1-of-9\" retrieve object -- basic_property / simple_property / cumulative_property / financial_property / featured_property / indicator_property / broker_property / kline_shape_property / option_property. Return order aligns exactly with retrieve_queries."
+      },
+      {
+        "name": "sort",
+        "type": "object",
+        "raw_type": "object",
+        "in": "body",
+        "required": false,
+        "description": "Single-field sort (mutually exclusive with sorts; sorts takes priority). Structure: {direction, simple_property:{name}} (can also use cumulative_property / financial_property / featured_property). direction: 1=ASC, 2=DESC, 3=ASC by absolute value, 4=DESC by absolute value."
+      },
+      {
+        "name": "sorts",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": false,
+        "description": "Multi-field sort, priority by array order. Each element has the same structure as sort."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for the first page; pass back the previous page's pagination.next_key."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Page size. Default 200, max 300."
+      },
+      {
+        "name": "watchlist_stock_ids",
+        "type": "array",
+        "raw_type": "int[]",
+        "in": "body",
+        "required": false,
+        "description": "Watchlist stock_id list. Used with user_stock_list_mode=1 to screen within watchlist scope."
+      },
+      {
+        "name": "holding_stock_ids",
+        "type": "array",
+        "raw_type": "int[]",
+        "in": "body",
+        "required": false,
+        "description": "Holdings stock_id list. Used with user_stock_list_mode=2 to screen within holdings scope."
+      },
+      {
+        "name": "user_stock_list_mode",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "User stock list filter mode: 0=unrestricted (default) / 1=watchlist only / 2=holdings only."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/trading-days",
+    "title": "Trading Days",
+    "method": "GET",
+    "path": "/api/v1.0/quote/trading-days",
+    "description": "Get the trading calendar for a specified market within a date range.",
+    "params": [
+      {
+        "name": "market",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Market code, e.g. HK, US, SH. See Naming Dictionary."
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Start date (yyyy-MM-dd)."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "End date (yyyy-MM-dd)."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/watchlist/user-security",
+    "title": "Get User Security",
+    "method": "GET",
+    "path": "/api/v1.0/quote/user-security",
+    "description": "Get the watchlist (user security list) for a specified group. Returns each security's code, name, lot size, security type, and derivative information.",
+    "params": [
+      {
+        "name": "group_name",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Group name (URL-encoded), max 100 characters. Group names can be obtained from user-security-group."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/watchlist/user-security-group",
+    "title": "Get User Security Group",
+    "method": "GET",
+    "path": "/api/v1.0/quote/user-security-group",
+    "description": "Get the user's watchlist group list (including system preset groups and user custom groups). Use user-security to get symbols in a group; use modify-user-security to add/remove symbols.",
+    "params": [
+      {
+        "name": "group_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Group type filter. Default ALL. Values: ALL=all / SYSTEM=system preset / CUSTOM=user custom."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/valuation/index-stock-plates",
+    "title": "Index Related Plates",
+    "method": "GET",
+    "path": "/api/v1.0/quote/valuation/index-stock-plates",
+    "description": "Get plates related to an index; usable as filter_security candidates for index constituent valuation.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Index symbol, e.g. HK.800000."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/valuation/index-stocks",
+    "title": "Index Component Valuation",
+    "method": "GET",
+    "path": "/api/v1.0/quote/valuation/index-stocks",
+    "description": "Get valuation list of index constituents, with pagination, sorting and optional plate filter.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Index symbol, e.g. HK.800000 (HSI)."
+      },
+      {
+        "name": "valuation_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Valuation type. Default 1. 1=PE, 2=PB, 3=PS."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      },
+      {
+        "name": "sort_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Sort direction. Same as plate valuation API."
+      },
+      {
+        "name": "sort_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Sort field. Same as plate valuation API."
+      },
+      {
+        "name": "filter_security",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter index constituents by plate; leave empty for no filter. Use index-stock-plates API for candidates."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/valuation/plate-stocks",
+    "title": "Valuation Plate Stocks",
+    "method": "GET",
+    "path": "/api/v1.0/quote/valuation/plate-stocks",
+    "description": "Get the constituent stock list for a plate with valuation data, supporting pagination by valuation type, sort field and direction.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Industry plate code, e.g. HK.LIST1003."
+      },
+      {
+        "name": "valuation_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Valuation type. Default 1. 1=PE, 2=PB, 3=PS."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor, leave empty for first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      },
+      {
+        "name": "sort_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Sort direction. Default asc. asc=ascending, desc=descending."
+      },
+      {
+        "name": "sort_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Sort field. Default market_cap. Options: market_cap / valuation / forward_valuation / historical_percentile."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/screening/warrant-screen",
+    "title": "Warrant Screen",
+    "method": "POST",
+    "path": "/api/v1.0/quote/warrant-screen",
+    "description": "Warrant screening -- filter within the warrant market (CALL warrants / PUT warrants / BULL CBBCs / BEAR CBBCs / INLINE warrants) by combining dimensions such as issuer, underlying, price, strike price, maturity date, street ratio, implied volatility, leverage, delta, warrant status, etc. Supports multi-level sorting and pagination.",
+    "params": [
+      {
+        "name": "market_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Default 1 (HK). Allowed values: 1=HK (Hong Kong), 4=SG (Singapore), 15=MY (Malaysia)."
+      },
+      {
+        "name": "is_delay",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "body",
+        "required": false,
+        "description": "Whether to use delayed data. Default false."
+      },
+      {
+        "name": "only_count",
+        "type": "boolean",
+        "raw_type": "bool",
+        "in": "body",
+        "required": false,
+        "description": "Return count only without detail list. Default false."
+      },
+      {
+        "name": "stock_owner",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Underlying code (convenience parameter, auto-converted to a single screen_groups condition, e.g. HK.00700). Use screen_groups for complex filtering."
+      },
+      {
+        "name": "screen_groups",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": false,
+        "description": "Filter condition list. Each element structure: {field_id, interval{lower{value,is_included}, upper{value,is_included}}, choices[{content_type, value}]}. Discrete selection uses choices (multiple elements = OR); range filtering uses interval. See the wrnt_field enum table below for field_id values."
+      },
+      {
+        "name": "sorts",
+        "type": "array",
+        "raw_type": "object[]",
+        "in": "body",
+        "required": false,
+        "description": "Sort condition list. Each element: {sort_field_id, sort_flag}. sort_flag=true for descending, false for ascending."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for first page; pass back previous page's pagination.next_key."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": false,
+        "description": "Page size. Default 200, max 1000."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/capital-flow/capital-distribution",
+    "title": "Capital Distribution",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/capital-distribution",
+    "description": "Get the current day's capital flow distribution by order size (super-large, large, medium, small) for an individual stock.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. SZ.000001."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/capital-flow/capital-flow",
+    "title": "Capital Flow (Intraday)",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/capital-flow",
+    "description": "Get intraday (minute-level) capital flow in/out data for an individual stock.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, MARKET.CODE format, e.g. HK.00700 / US.AAPL / SZ.000001."
+      },
+      {
+        "name": "section",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Trading session, default NORMAL. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/capital-flow/capital-flow-history",
+    "title": "Capital Flow (History)",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/capital-flow/history",
+    "description": "Get historical capital flow in/out data at day/week/month level for an individual stock.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, MARKET.CODE format, e.g. HK.00700 / US.AAPL / SZ.000001."
+      },
+      {
+        "name": "period_type",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Aggregation period, default DAY. See Naming Dictionary."
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Start date yyyy-MM-dd (inclusive), omit for no lower bound."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "End date yyyy-MM-dd (inclusive), omit to use current date."
+      },
+      {
+        "name": "count",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Maximum number of data points to return, range 1~1000, default 365."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/company/executive-background",
+    "title": "Executive Background",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/company/executive-background",
+    "description": "Get detailed background information for a specific executive. You must first obtain the leader_name from the Company Executives API, then pass it to this API to query a single executive's long-text background profile.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "leader_name",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Executive name, must exactly match the leader_name field returned by the Company Executives API."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/company/executives",
+    "title": "Company Executives",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/company/executives",
+    "description": "Get the list of company executives (directors / management) and their basic appointment information: name, position, gender, age, appointment start date, highest education, shares held, annual salary.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/company/operational-efficiency",
+    "title": "Operational Efficiency",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/company/operational-efficiency",
+    "description": "Get historical operational efficiency metrics for a company (employee count, revenue per capita / operating profit per capita / net profit per capita and their respective YoY), returned by financial reporting period.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of records. Default 10, max 100."
+      },
+      {
+        "name": "financial_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Default 7. Options: 7 (annual report) / 102 (all cumulative quarterly reports). See Naming Dictionary."
+      },
+      {
+        "name": "currency_code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Currency code (ISO 4217), e.g. CNY. Defaults to the currency of the latest report."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/company/profile",
+    "title": "Company Profile",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/company/profile",
+    "description": "Get company detail labels (company overview, listing info, key metrics, etc.) displayed in a \"label name / label value\" format. ETF / REIT automatically routes to fund data source.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/corporate-actions/buybacks",
+    "title": "Buybacks",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/corporate-actions/buybacks",
+    "description": "Get the share buyback history for a company. Returns HK or A-share data depending on the market of the symbol.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/corporate-actions/dividends",
+    "title": "Dividends",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/corporate-actions/dividends",
+    "description": "Get the dividend payment history for a stock (sorted by time descending, max 100 records). Each record returns fiscal year, plan description, cash dividend per share with currency, payout ratio, dividend type, plan progress, and key dates.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/rehab",
+    "title": "Rehabilitation Factor",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/corporate-actions/rehab",
+    "description": "Get the adjustment (rehabilitation) factors for a stock, including forward/backward adjustment factors, dividend, split, and allotment ratios.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700 / US.AAPL"
+      },
+      {
+        "name": "divi_mode",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Dividend handling mode for adjustment factors. See Naming Dictionary > divi_mode"
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/corporate-actions/splits",
+    "title": "Stock Splits",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/corporate-actions/splits",
+    "description": "Get detailed records of HK stock split/consolidation events (split / consolidation / consolidation-then-split / split-then-consolidation). Only HK market is supported.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code (HK stocks only have data), e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/cur-kline",
+    "title": "Current K-Line",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/cur-kline",
+    "description": "Get real-time K-line (candlestick) data for a symbol, returning the latest num bars. Supports minute/day/week/month/year/quarter periods and adjustment types. Only returns the latest N bars.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "num",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "Number of K-line bars, 1~370."
+      },
+      {
+        "name": "ktype",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "K-line type, default 2. See ktype enum table below."
+      },
+      {
+        "name": "autype",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Adjustment type, default 1. See autype enum table below."
+      },
+      {
+        "name": "extended_time",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Pre/post market / night session toggle, default 0 (only effective for US 1-min K-line). See extended_time enum table below."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/financials/earnings-price-history",
+    "title": "Earnings Price History",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/financials/earnings-price-history",
+    "description": "Get the stock price performance on historical earnings release dates and surrounding offset days. Each earnings period returns: option predicted volatility, post-earnings IV crush, OHLC for the earnings trading day, and a daily close price series from -15 to +14 days centered on the disclosure date.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/financials/earnings-price-move",
+    "title": "Earnings Price Move",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/financials/earnings-price-move",
+    "description": "Get the stock price movement around earnings disclosure dates. Returns daily quote sequences centered on the disclosure date across multiple reporting periods (open/close/high/low/previous close/volume, option IV/HV), along with an overview summary for the entire request (average earnings-day price change over recent N periods).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "count",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of recent earnings periods to return. Default 10, max 50."
+      },
+      {
+        "name": "overview_count",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of earnings periods for overview statistics. Default 8, max 50. Effective value = min(overview_count, count)."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/financials/revenue-breakdown",
+    "title": "Revenue Breakdown",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/financials/revenue-breakdown",
+    "description": "Get a company's revenue composition breakdown by product / industry / region / business dimension for a specified financial period, along with an available period dropdown list.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "date",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Financial period end date (second-level timestamp); 0 = latest period. Default 0."
+      },
+      {
+        "name": "financial_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Financial period type selector. Default 0. See Naming Dictionary."
+      },
+      {
+        "name": "currency_code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Currency code (ISO 4217), e.g. USD. If not provided, returns in the original report currency."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/financials/statements",
+    "title": "Financial Statements",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/financials/statements",
+    "description": "Get the income statement / balance sheet / cash flow statement / key metrics data for a company, returned by reporting period. Each record includes report period, fiscal year, financial period type, currency and accounting standards, as well as item_list (each field contains field_id, English field name display_name, value, YoY, QoQ).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "statement_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Report type. Default 1. 1=Income Statement, 2=Balance Sheet, 3=Cash Flow Statement, 4=Key Metrics."
+      },
+      {
+        "name": "financial_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Financial period type. Default 10. See Naming Dictionary."
+      },
+      {
+        "name": "currency_code",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Currency code (ISO 4217), e.g. CNY, USD. Default is the report's native currency."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor. Leave empty for first page; pass the pagination.next_key from last response for next page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/history-kline",
+    "title": "History K-Line",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/history-kline",
+    "description": "Get historical K-line (candlestick) data with pagination support.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. US.FUTU."
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Start date (yyyy-MM-dd)."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "End date (yyyy-MM-dd)."
+      },
+      {
+        "name": "ktype",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "K-line type. Default 2. 1=1min, 2=Day, 3=Week, 4=Month, 5=Year, 6=5min, 7=15min, 8=30min, 9=60min. See Naming Dictionary."
+      },
+      {
+        "name": "autype",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Adjustment type. Default 1. 0=None, 1=Forward, 2=Backward. See Naming Dictionary."
+      },
+      {
+        "name": "num",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of bars. Default 370, max 370."
+      },
+      {
+        "name": "extended_time",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Extended hours. Default 0. 0=Default, 1=Include pre/after market (US minute K), 2=Include overnight (US). See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-chain",
+    "title": "Option Chain",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-chain",
+    "description": "Get the option chain for a given underlying symbol within a specified expiration date range. For US combo lists / spreads / quotes use Combo Option Strategy, Combo Option Spread, and Combo Option Quote.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option underlying code, e.g. HK.00700, US.AAPL, HK.800000 (HSI)."
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Start expiration date yyyy-MM-dd (inclusive), omit for no lower bound."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "End expiration date yyyy-MM-dd (inclusive), omit for no upper bound."
+      },
+      {
+        "name": "index_option_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Index option type, required only for index underlyings, omit for regular stocks. See Naming Dictionary."
+      },
+      {
+        "name": "filter_standard",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter by standard/non-standard options, default ALL. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-exercise-probability",
+    "title": "Option Exercise Probability",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-exercise-probability",
+    "description": "Get the exercise probability analysis for an option contract.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option contract code (must be an option contract, not an underlying stock code), e.g. HK.TCH260528C230000."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Maximum number of records to return, range 1~1000; omit to return full history for the contract."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-expiration",
+    "title": "Option Expiration Date",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-expiration",
+    "description": "Get the list of option expiration dates for a given underlying symbol. For US combo options, take strike_time from this API as expire_time / far_expire_time, then call Combo Option Strategy.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option underlying code, e.g. HK.00700, US.AAPL, HK.800000 (HSI)."
+      },
+      {
+        "name": "index_option_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Index option type, required only for index underlyings, omit for regular stocks. See Naming Dictionary."
+      },
+      {
+        "name": "filter_standard",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter by standard/non-standard, default ALL. See Naming Dictionary."
+      },
+      {
+        "name": "filter_expiration_cycles",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter by expiration cycle, comma-separated (e.g. MONTH,QUARTERLY), omit or empty string = no filter. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-strategy",
+    "title": "Combo Option Strategy",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-strategy",
+    "description": "Query combo option lists by underlying, strategy type and expiry date. Returns combo_list[]: each item is one combo, with all legs in legs[] (instrument=OPTION for option contracts; Covered/Collar also include the path underlying as instrument=STOCK).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option underlying code, US or HK equity/ETF. e.g. US.AAPL / HK.00700."
+      },
+      {
+        "name": "strategy",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "Combo strategy type. See Naming Dictionary. HK does not support Covered(2) / Collar(8)."
+      },
+      {
+        "name": "expire_time",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Near expiry date yyyy-MM-dd, e.g. 2026-08-21."
+      },
+      {
+        "name": "far_expire_time",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Far expiry date yyyy-MM-dd. Required for CalendarSpread(15) / DiagonalSpread(16), and must be later than expire_time."
+      },
+      {
+        "name": "spread",
+        "type": "number",
+        "raw_type": "number",
+        "in": "query",
+        "required": false,
+        "description": "Spread in real price (0~9223372036). Required for 4/7/8/9/11/13/14/16; omitting it returns -5. Call Combo Option Spread first and pass default_spread or a spread_list value. Optional for 1/2/6/15/100. See Naming Dictionary."
+      },
+      {
+        "name": "index_option_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "US index option type; required only for US index underlyings, omit for equities. Use the US block (1000+) in the Naming Dictionary."
+      },
+      {
+        "name": "filter_standard",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter by standard/non-standard, default ALL. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-strategy-spread",
+    "title": "Combo Option Spread",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-strategy-spread",
+    "description": "Query the backend spread list and default spread for an underlying + strategy + expiry. Returns spread_list (already restored to real prices) and default_spread.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option underlying code, US only. e.g. US.AAPL."
+      },
+      {
+        "name": "strategy",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "Combo strategy type. See Naming Dictionary."
+      },
+      {
+        "name": "expire_time",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Near expiry date yyyy-MM-dd, e.g. 2026-08-21."
+      },
+      {
+        "name": "far_expire_time",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Far expiry date yyyy-MM-dd. Required for CalendarSpread(15) / DiagonalSpread(16), and must be later than expire_time."
+      },
+      {
+        "name": "index_option_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "US index option type; required only for US index underlyings. Use the US block (1000+) in the Naming Dictionary."
+      },
+      {
+        "name": "filter_standard",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Filter by standard/non-standard, default ALL. See Naming Dictionary."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/option-volatility",
+    "title": "Option Volatility",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/option-volatility",
+    "description": "Get implied volatility (IV), historical volatility (HV), volatility premium analysis and text analysis for an option contract.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Option contract code (must be an option contract, not an underlying stock code), e.g. HK.TCH260629C470000."
+      },
+      {
+        "name": "query_time_period",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Query time period, default 2. 1=1 week, 2=1 month, 3=3 months, 4=6 months, 5=1 year. See Naming Dictionary."
+      },
+      {
+        "name": "hv_time_period",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Historical volatility period (calendar days), default 30, range 5~250."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/basic-data/owner-plate",
+    "title": "Owner Plate",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/owner-plate",
+    "description": "Get the industry / concept sectors (plates) that a stock belongs to.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/derivatives/reference-future",
+    "title": "Reference Future",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/reference-future",
+    "description": "Get reference future contract information for a symbol.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, typically a futures front-month/continuous contract (e.g. HK.HSImain, US.CLmain, SG.NKmain). Non-futures symbols are valid but return an empty list."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/research/analyst-consensus",
+    "title": "Analyst Consensus",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/research/analyst-consensus",
+    "description": "Get the analyst consensus rating and target price for a stock (composite rating, number of covering analysts, rating tier proportions, target price range).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/research/morningstar",
+    "title": "Morningstar Report",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/research/morningstar",
+    "description": "Get the Morningstar comprehensive rating report for a stock, including star rating, fair value, economic moat, uncertainty, capital allocation, financial health and other core ratings, as well as analyst text commentary for each dimension.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/research/rating-summary",
+    "title": "Rating Summary",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/research/rating-summary",
+    "description": "Get the analyst rating summary for a stock, providing per-institution / per-analyst rating details (rating, target price, recommendation date, report link). Supports institution-level and analyst-level views.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. US.AAPL (only US/CA stocks have data)."
+      },
+      {
+        "name": "rating_dimension_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Rating dimension. 1=Institution (default), 2=Analyst."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 20."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/rt-data",
+    "title": "Real-time Data",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/rt-data",
+    "description": "Get intraday time-sharing data for a symbol. Supports NORMAL (default; HK automatically includes dark pool) / FULL (complete including pre/post market, US only) / PREMARKET / AFTERHOURS (US pre/post market) / HK_DARK (HK dark pool) / OVERNIGHT (night session). Current day trading sessions only, no cross-day history.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, format {market}.{code}, e.g. HK.00700."
+      },
+      {
+        "name": "request_section",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Trading session, default NORMAL. See request_section enum table below."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/realtime/rt-ticker",
+    "title": "Real-time Ticker",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/rt-ticker",
+    "description": "Get tick-by-tick trade data for a symbol. Returns the latest N trade details, including price, volume, buy/sell direction, trade type and session.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "num",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of ticks to return, default 500, range 1~750."
+      },
+      {
+        "name": "period",
+        "type": "array",
+        "raw_type": "string[]",
+        "in": "query",
+        "required": false,
+        "description": "Filter by session; pass multiple values with the same key, e.g. ?period=BEFORE&period=AFTER; omit for all sessions. See enum period_type."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/holder-detail",
+    "title": "Holder Detail",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/holder-detail",
+    "description": "Get the shareholder holding detail list for a stock, with filtering by holder type / reporting period / holder ID, and sorting by shares held or change amount.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "request_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Holder type filter. Default 1000 (all). See Naming Dictionary."
+      },
+      {
+        "name": "period_id",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Reporting period ID filter. Default 0 (latest)."
+      },
+      {
+        "name": "holder_id",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Filter by holder ID. Default 0 (no filter)."
+      },
+      {
+        "name": "sort_column",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort column. Default 61. 61=shares held, 62=shares change."
+      },
+      {
+        "name": "sort_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort direction. 0=descending (default), 1=ascending."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/holding-changes",
+    "title": "Holding Changes",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/holding-changes",
+    "description": "Get the shareholder holding change records for a security, with filtering by increase/decrease direction, multi-dimensional sorting, and pagination.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 30, max 50."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      },
+      {
+        "name": "sort_column",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort column. Default 1. 1=change amount, 2=holding date, 3=change ratio, 4=change value, 5=holding ratio."
+      },
+      {
+        "name": "sort_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Sort direction. Default 0. 0=descending, 1=ascending."
+      },
+      {
+        "name": "filter_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Increase/decrease filter. Default 0. 0=no filter, 1=increase, 2=decrease, 3=new position, 4=full exit."
+      },
+      {
+        "name": "holder_category",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Holder scope. Default INSTITUTIONS. Options: INSTITUTIONS / INDIVIDUALS / CORPORATIONS / ALL."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/insider-holders",
+    "title": "Insider Holders",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/insider-holders",
+    "description": "Get the insider (directors / executives) holding list and summary statistics for a company.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. US.AAPL."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 30."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/insider-trades",
+    "title": "Insider Trades",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/insider-trades",
+    "description": "Get insider (directors, executives, 5%+ shareholders) trading records. Data is based on US SEC insider filings (Form 3/4/144).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. US.AAPL."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size. Default 10, max 50."
+      },
+      {
+        "name": "holder_id",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Filter by insider ID. 0=no filter (default)."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/institutional",
+    "title": "Institutional Shareholders",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/institutional",
+    "description": "Get the institutional holding summary (aggregated by reporting period) for a stock, returning institution count, total holdings and ratio with period-over-period changes, along with reporting period close/open/previous close prices.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700."
+      },
+      {
+        "name": "limit",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of reporting periods per page. Default 10, max 50."
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor; leave empty for the first page."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/shareholders/overview",
+    "title": "Shareholders Overview",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/shareholders/overview",
+    "description": "Get the shareholder holding overview for a company. Returns the top 5 shareholders, holder type distribution percentages, and available holding period list.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Security code, e.g. HK.00700."
+      },
+      {
+        "name": "period_id",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Holding period ID. Default 0 (latest period)."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/short/daily-volume",
+    "title": "Daily Short Volume",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/short/daily-volume",
+    "description": "Get daily short selling trade data for a symbol, sorted by date from newest to oldest. HK returns trade-level short data (short selling turnover, daily average ratio, etc.). US returns position-level short data (total short shares, Nasdaq/NYSE short shares, short ratio, etc.).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700 or US.AAPL."
+      },
+      {
+        "name": "count",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of records. Default 30, max 90."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/short/interest",
+    "title": "Short Interest",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/short/interest",
+    "description": "Get short interest data for a stock (HK / US). Data is returned sorted by trading day from newest to oldest. HK returns short position details (outstanding short shares, percentage of float). US returns monthly short reports (short shares, short ratio, days to cover).",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700 or US.AAPL."
+      },
+      {
+        "name": "count",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Number of records. Default 30, max 90."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/top-brokers/top-brokers",
+    "title": "Top Buy/Sell Brokers",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/top-brokers",
+    "description": "Get the top 10 buy/sell brokers for HK stocks, split into net buy and net sell groups. Provides both real-time and historical dimensions.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "HK stock code, e.g. HK.00700."
+      },
+      {
+        "name": "date",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Trading date to query (YYYY-MM-DD). Defaults to latest trading day."
+      },
+      {
+        "name": "days_before",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "Number of days before current trading day, range 1-365."
+      }
+    ]
+  },
+  {
+    "doc": "api/quote/valuation/detail",
+    "title": "Valuation Detail",
+    "method": "GET",
+    "path": "/api/v1.0/quote/{symbol}/valuation/detail",
+    "description": "Get valuation metrics (PE/PB/PS) and historical trend for a stock or index. Stocks return full valuation (trend + market distribution + plate distribution + profit growth rate); indices return trend + constituent valuation distribution.",
+    "params": [
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Symbol code, e.g. HK.00700 (stock) or HK.800700 (index)."
+      },
+      {
+        "name": "valuation_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Valuation type. Default 1. 1=PE, 2=PB, 3=PS."
+      },
+      {
+        "name": "interval_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Time span. Default 3. 1=3 months, 2=6 months, 3=1 year, 4=3 years, 5=Since May 2019, 6=5 years, 7=10 years, 8=2 years, 9=20 years, 10=30 years."
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/account-list",
+    "title": "Account List",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/accounts",
+    "description": "Get the list of simulated trading accounts for the current logged-in user. Accounts are automatically created on the first call. The returned account_id is used as a path parameter for all subsequent trading endpoints.",
+    "params": []
+  },
+  {
+    "doc": "api/sim-trade/cash-info",
+    "title": "Account Cash Info",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/{acc_id}/cash-info",
+    "description": "Get account cash/asset information (balance, frozen amount, buying power, market value, P&L).",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/history-order-list",
+    "title": "History Orders",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/{acc_id}/history-orders",
+    "description": "Get historical orders (supports time range + pagination).",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "time_begin",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Start time (microseconds)"
+      },
+      {
+        "name": "time_end",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "End time (microseconds)"
+      },
+      {
+        "name": "page_size",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Page size (default 50)"
+      },
+      {
+        "name": "next_key",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Pagination cursor"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/max-buy-sell",
+    "title": "Max Buy/Sell Quantity",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/{acc_id}/max-buy-sell",
+    "description": "Query the maximum buy/sell quantity for a security.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": true,
+        "description": "Security symbol"
+      },
+      {
+        "name": "order_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": true,
+        "description": "1=Limit 3=Market"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Price (required for limit orders)"
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "query",
+        "required": false,
+        "description": "Original order ID (for modification)"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/order-list",
+    "title": "Today's Orders",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/{acc_id}/orders",
+    "description": "Get today's order list.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/input-order",
+    "title": "Place Order",
+    "method": "POST",
+    "path": "/api/v1.0/sim-trade/{acc_id}/orders",
+    "description": "Place a simulated trade order. Limit orders require a price; orders priced above market price are filled immediately. HK stock quantities must be multiples of the board lot size.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "market",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": true,
+        "description": "Market (from market_id in account list)"
+      },
+      {
+        "name": "symbol",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Security symbol"
+      },
+      {
+        "name": "order_type",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": true,
+        "description": "1=Limit 3=Market"
+      },
+      {
+        "name": "order_side",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "body",
+        "required": true,
+        "description": "1=Buy 2=Sell 3=Short Sell 4=Buy Back"
+      },
+      {
+        "name": "qty",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": true,
+        "description": "Quantity"
+      },
+      {
+        "name": "price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Price (required for limit orders)"
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "Remark (≤100 bytes)"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/cancel-order",
+    "title": "Cancel Order",
+    "method": "POST",
+    "path": "/api/v1.0/sim-trade/{acc_id}/orders/{order_id}/cancel",
+    "description": "Cancel an unfilled order. Only orders with status=2 (Submitted) can be cancelled.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Order ID to cancel"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/modify-order",
+    "title": "Modify Order",
+    "method": "POST",
+    "path": "/api/v1.0/sim-trade/{acc_id}/orders/{order_id}/modify",
+    "description": "Modify the quantity or price of an unfilled order. Only orders with status=2 (Submitted) can be modified.",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "order_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Original order ID"
+      },
+      {
+        "name": "new_qty",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "New quantity (must be a multiple of board lot)"
+      },
+      {
+        "name": "new_price",
+        "type": "string",
+        "raw_type": "string",
+        "in": "body",
+        "required": false,
+        "description": "New price"
+      }
+    ]
+  },
+  {
+    "doc": "api/sim-trade/position-list",
+    "title": "Position List",
+    "method": "GET",
+    "path": "/api/v1.0/sim-trade/{acc_id}/positions",
+    "description": "Get the position list (symbol, direction, quantity, cost, market value, P&L).",
+    "params": [
+      {
+        "name": "acc_id",
+        "type": "string",
+        "raw_type": "string",
+        "in": "path",
+        "required": true,
+        "description": "Business account ID"
+      },
+      {
+        "name": "market",
+        "type": "integer",
+        "raw_type": "int",
+        "in": "query",
+        "required": false,
+        "description": "Market filter"
+      }
+    ]
+  }
+]

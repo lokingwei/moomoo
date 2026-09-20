@@ -1,0 +1,10 @@
+node_modules/
+.wrangler/
+.dev.vars
+*.log
+
+# Captured market data (see scripts/) - regenerate rather than commit.
+data/*.json
+
+# moomoo signing keys - never commit
+*.pem

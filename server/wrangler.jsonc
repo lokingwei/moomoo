@@ -1,0 +1,49 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "moomoo-mcp",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-15",
+  // global_fetch_strictly_public: required for Client ID Metadata Document support,
+  // so outbound CIMD fetches cannot be routed back inside the zone (SSRF guard).
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "account_id": "6b157ecc8f3576699413816fb9a6dc17",
+  "workers_dev": true,
+  "observability": {
+    "enabled": true
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "MOOMOO_MCP",
+        "class_name": "MoomooMCP"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["MoomooMCP"]
+    }
+  ],
+  // OAuth clients, grants and tokens live here.
+  "kv_namespaces": [
+    {
+      "binding": "OAUTH_KV",
+      "id": "dbcbf0489fce4c10b74f7ac2afb4e8bf"
+    }
+  ],
+  "vars": {
+    // Live-money trading tools are not registered unless this is exactly "true".
+    "MOOMOO_ENABLE_LIVE_TRADING": "false",
+    "MOOMOO_SIGN_ALG": "Ed25519",
+    // Canonical public origin. OAuth metadata must advertise the URL clients actually
+    // use, so pin it rather than inferring it from the incoming request.
+    "PUBLIC_URL": "https://moomoo-mcp.kingwei-lo.workers.dev"
+  }
+  // Secrets (set with `wrangler secret put <NAME>`, never committed):
+  //   OAUTH_LOGIN_PASSWORD - required for OAuth; passphrase on the consent screen
+  //   MCP_AUTH_TOKEN       - optional; static admin bearer token for CLI clients
+  //   MOOMOO_APP_KEY       - AppKey id            (AppKey auth)
+  //   MOOMOO_PRIVATE_KEY   - PKCS#8 PEM priv key  (AppKey auth)
+  //   MOOMOO_ACCESS_TOKEN  - OAuth access token   (alternative to AppKey auth)
+}

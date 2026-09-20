@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local `wrangler dev`. Never commit .dev.vars.
+MCP_AUTH_TOKEN=local-dev-token
+# AppKey auth (server-to-server):
+# MOOMOO_APP_KEY=your-appkey-id
+# MOOMOO_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
+# Or OAuth:
+# MOOMOO_ACCESS_TOKEN=your-access-token

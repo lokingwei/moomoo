@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "moomoo": {
+      "type": "http",
+      "url": "https://moomoo-mcp.kingwei-lo.workers.dev/mcp",
+      "headers": {
+        "Authorization": "Bearer ${MOOMOO_MCP_TOKEN}"
+      }
+    }
+  }
+}
