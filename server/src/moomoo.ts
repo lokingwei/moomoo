@@ -22,6 +22,11 @@ export interface MoomooAuth {
   accessToken?: string;
 }
 
+/** Anything with a `fetch`, such as a Workers VPC service binding. */
+export interface Egress {
+  fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+}
+
 export interface RequestSpec {
   method: string;
   /** Path with `{placeholders}` already substituted. */
@@ -152,13 +157,23 @@ export function buildQuery(query: RequestSpec["query"]): string {
 export class MoomooClient {
   #auth: MoomooAuth;
   #baseUrl: string;
+  /**
+   * moomoo requires a fixed source IP, and Workers egress from shared Cloudflare
+   * IPs, so the deployment passes a VPC binding that exits through a static-IP
+   * tunnel. The binding ignores the URL's host for routing but still sends it as
+   * Host and SNI, so `#baseUrl` stays the real moomoo host.
+   */
+  #fetch: Egress["fetch"];
   /** serverTime - localTime, in ms. moomoo rejects requests skewed by >5s. */
   #clockOffsetMs = 0;
   #clockSyncedAt = 0;
 
-  constructor(auth: MoomooAuth, baseUrl: string = DEFAULT_BASE_URL) {
+  constructor(auth: MoomooAuth, baseUrl: string = DEFAULT_BASE_URL, egress?: Egress) {
     this.#auth = auth;
     this.#baseUrl = baseUrl.replace(/\/+$/, "");
+    // Wrapped, not stored bare: Workers throws "Illegal invocation" when the
+    // global fetch is called with a foreign `this`.
+    this.#fetch = egress ? (input, init) => egress.fetch(input, init) : (input, init) => fetch(input, init);
   }
 
   get hasCredentials(): boolean {
@@ -179,7 +194,7 @@ export class MoomooClient {
     const age = Date.now() - this.#clockSyncedAt;
     if (!force && this.#clockSyncedAt && age < 5 * 60_000) return;
     try {
-      const res = await fetch(`${this.#baseUrl}/api/v1.0/server-time`, {
+      const res = await this.#fetch(`${this.#baseUrl}/api/v1.0/server-time`, {
         headers: { accept: "application/json" },
       });
       if (!res.ok) return;
@@ -227,7 +242,7 @@ export class MoomooClient {
       headers["authorization"] = await sign(this.#auth.privateKeyPem!, alg, message);
     }
 
-    const res = await fetch(url, {
+    const res = await this.#fetch(url, {
       method,
       headers,
       body: bodyBytes ? (bodyBytes as unknown as BodyInit) : undefined,

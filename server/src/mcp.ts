@@ -38,6 +38,7 @@ function clientFor(env: Env): MoomooClient {
       accessToken: env.MOOMOO_ACCESS_TOKEN,
     },
     env.MOOMOO_BASE_URL || DEFAULT_BASE_URL,
+    env.MOOMOO_EGRESS,
   );
 }
 

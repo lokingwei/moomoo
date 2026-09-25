@@ -51,6 +51,8 @@ function healthResponse(env: Env): Response {
       : env.MOOMOO_APP_KEY && env.MOOMOO_PRIVATE_KEY
         ? "appkey"
         : "unconfigured",
+    // "direct" means Cloudflare's shared IPs, which moomoo will not accept.
+    moomooEgress: env.MOOMOO_EGRESS ? "tunnel" : "direct",
     clientAuth: {
       oauth: Boolean(env.OAUTH_LOGIN_PASSWORD),
       adminToken: Boolean(env.MCP_AUTH_TOKEN),

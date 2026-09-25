@@ -19,6 +19,8 @@ scripts/    Snapshot moomoo data to JSON for offline study    (todo)
 | Health (no auth) | `https://moomoo-mcp.kingwei-lo.workers.dev/health` |
 | Cloudflare account | `6b157ecc8f3576699413816fb9a6dc17` |
 | Worker | `moomoo-mcp` |
+| moomoo egress IP | `104.196.236.81` (GCP e2-micro, via tunnel `gcp-ec2-micro`) |
+| VPC service | `moomoo-webapi` = `01a0da0a-3c19-7323-a35e-ce921fec10d4` |
 
 Connecting a client needs the `MCP_AUTH_TOKEN` value as a bearer token.
 `.mcp.json` wires this repo up already; export the token first:
@@ -87,12 +89,45 @@ Local dev runs over plain HTTP, where RFC 9728 forbids declaring an issuer, so
 `src/index.ts` omits `resourceMetadata` unless the origin is HTTPS and lets the provider
 derive it. That is dev-only; the deployment always declares it.
 
+### Egress: a static IP for moomoo
+
+moomoo requires a fixed source IP, and Workers egress from shared Cloudflare IPs. So
+the Worker never calls moomoo directly. Every request goes through a Workers VPC
+binding (`MOOMOO_EGRESS` in `wrangler.jsonc`) to the Cloudflare Tunnel
+`gcp-ec2-micro`. That tunnel runs on a GCP e2-micro VM, and cloudflared there connects
+to `webapi.moomoo.com` itself, so moomoo sees the VM's IP.
+
+```
+Worker --MOOMOO_EGRESS--> tunnel gcp-ec2-micro --> GCP VM (104.196.236.81) --> webapi.moomoo.com
+```
+
+- There is no public proxy hostname. The binding is the only way in, so the static IP
+  cannot be borrowed by anyone else.
+- The VPC service's hostname decides where a request goes. The URL passed to the
+  binding only sets Host and SNI, which is why the client keeps
+  `https://webapi.moomoo.com` as its base URL.
+- `/health` reports `"moomooEgress": "tunnel"`. `"direct"` means the binding is
+  missing and moomoo will reject every call.
+- `remote: true` makes `pnpm dev` use the real tunnel as well, so it needs
+  `wrangler login`.
+- The IP must stay the same. If the VM's external IP is ephemeral, a stop/start
+  changes it, so reserve it as static in GCP.
+
+Recreate the VPC service (e.g. after replacing the tunnel), then put the new id in
+`wrangler.jsonc`:
+
+```bash
+npx wrangler vpc service create moomoo-webapi --type http \
+  --tunnel-id <TUNNEL_ID> --hostname webapi.moomoo.com
+```
+
 ### Before the tools return data
 
 The Worker is deployed and serving, but **no moomoo credentials are set yet**, so every
 tool currently fails with "No moomoo credentials configured". `/health` reports this as
 `"moomooAuth": "unconfigured"`. To finish setup, create an AppKey at
-https://open.moomoo.com/dashboard, upload the public half of an Ed25519 key, then:
+https://open.moomoo.com/dashboard, upload the public half of an Ed25519 key, bind the
+egress IP `104.196.236.81` to it (see [Egress](#egress-a-static-ip-for-moomoo)), then:
 
 ```bash
 cd server
@@ -117,7 +152,7 @@ A Cloudflare Worker exposing all 86 moomoo REST endpoints as MCP tools.
 src/catalog.ts   GENERATED. 86 endpoints + params. Never hand-edit.
 src/types.ts     Endpoint/Param shapes and the risk classification.
 src/schema.ts    Catalog params -> Zod input schema; args -> path/query/body.
-src/moomoo.ts    REST client: AppKey request signing, OAuth bearer, clock sync.
+src/moomoo.ts    REST client: AppKey request signing, OAuth bearer, clock sync, egress.
 src/mcp.ts       McpAgent that registers one tool per endpoint, scope-gated.
 src/oauth.ts     Consent screen + passphrase check for the OAuth flow.
 src/index.ts     Worker entry: admin token, OAuthProvider, /health.
@@ -159,7 +194,7 @@ cd server
 pnpm install
 pnpm dev                 # wrangler dev on :8788
 pnpm typecheck
-pnpm deploy
+pnpm run deploy          # not `pnpm deploy`: that is a pnpm workspace builtin
 ```
 
 Local dev reads `server/.dev.vars` (gitignored — copy `.dev.vars.example`).
@@ -240,6 +275,9 @@ Two paths into moomoo, both handled by `src/moomoo.ts`:
   timestamp, method, path, query, sha256(body) — and the separators are kept even
   when a field is empty. moomoo rejects a clock skew over 5s, so the client syncs
   against `/api/v1.0/server-time` and retries once on error `-12006`.
+  moomoo documents `-12006` as clock skew, but it actually returns `401 -12006` for
+  **every** auth failure: unknown AppKey, bad signature, even no auth headers at all.
+  So a persistent `-12006` is usually a key or IP-binding problem, not the clock.
 - **OAuth**: set `MOOMOO_ACCESS_TOKEN` and it sends `Authorization: Bearer` instead.
 
 ## Reference

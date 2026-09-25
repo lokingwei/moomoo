@@ -25,6 +25,17 @@
       "new_sqlite_classes": ["MoomooMCP"]
     }
   ],
+  // moomoo requires a fixed source IP, which Workers cannot provide. Every moomoo call
+  // goes through this VPC service instead: tunnel `gcp-ec2-micro` on a GCP e2-micro
+  // VM, which connects to webapi.moomoo.com from the VM's static IP (104.196.236.81).
+  // `remote` makes `wrangler dev` use the real tunnel too.
+  "vpc_services": [
+    {
+      "binding": "MOOMOO_EGRESS",
+      "service_id": "01a0da0a-3c19-7323-a35e-ce921fec10d4",
+      "remote": true
+    }
+  ],
   // OAuth clients, grants and tokens live here.
   "kv_namespaces": [
     {
